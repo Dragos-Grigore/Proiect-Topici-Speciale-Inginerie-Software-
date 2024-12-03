@@ -31,8 +31,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 </div>
 
 
-
-
 <header class="w3-container w3-red w3-center" style="padding:128px 16px">
     <h1 class="w3-margin w3-jumbo">Welcome to the Playground <i class="fa fa-gamepad" aria-hidden="true"></i></h1>
     
@@ -52,11 +50,24 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
     <div class="w3-margin-top" style="display: inline-block; vertical-align: middle; margin-left: 10px;">
         <!-- Dropdown Menu (Placed next to the buttons) -->
         <label for="llm-select">Choose a LLM:</label>
-        <select id="llm-select" class="w3-select w3-black w3-padding-large w3-large">
-            <option value="LLM 1" selected>LLM 1</option>
-            <option value="LLM 2">LLM 2</option>
+        <select id="llm-select" name="llm-select" class="w3-select w3-black w3-padding-large w3-large">
+            <option value="google/flan-t5-small" selected>google/flan-t5-small</option>
+            <option value="google/flan-t5-base">google/flan-t5-base</option>
+            <option value="bert-base-uncased">bert-base-uncased</option>
+            <option value="deepset/bert-base-cased-squad2">deepset/bert-base-cased-squad2</option>
         </select>
     </div>
+
+    <div class="w3-margin-top" style="display: inline-block; vertical-align: middle; margin-left: 10px;">
+      <!-- Dropdown Menu (Placed next to the buttons) -->
+      <label for="prompt-select">Choose a prompt:</label>
+      <select id="prompt-select" name="prompt-select" class="w3-select w3-black w3-padding-large w3-large">
+          <option value="What is this image about?" selected>What is this image about?</option>
+          <option value="What can we see in this image?">What can we see in this image?</option>
+          <option value="Tell me more about this image please">Tell me more about this image please</option>
+          <option value="What is it that you recognise in this image?">What is it that you recognise in this image?</option>
+      </select>
+  </div>
     
     <!-- Message Box for Success -->
     <div id="message-box" class="w3-container w3-green w3-padding-16" style="display: none;">
@@ -98,6 +109,25 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
   </div>
 </div>
 
+<!-- Third Grid -->
+<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-third w3-center">
+        <i class="fa fa-book w3-padding-64 w3-text-red" style="font-size: 150px;"></i>
+    </div>
+
+    <div class="w3-twothird">
+      <h1>Some information about each model so that you are familiar with all of them</h1>
+      <h5 class="w3-padding-32">Here you will find out about each available model</h5>
+
+      <p class="w3-text-grey">The Google flan models were first introduced in the paper: "Scaling Instruction-Finetuned Language Models" and they were instruction fine-tuned and chain-of-thought-fine-tuned according to the authors. They represent a good choice when working with question answering tasks. </p>
+      <p class="w3-text-grey">The difference between the base and the small model is the number of parameters: 250M and 80M</p>
+      <p class="w3-text-grey">The BERT models are probably the most well-known language models that exist. It was first introduced in the paper: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" and stands out with its bidirectional encoding. Although 6-years-old, it can still be used for various tasks including question-answering</p>
+      <p class="w3-text-grey">The difference between cased and uncased is that the cased model is case-sensitive while the uncased model is not</p>
+    </div>
+  </div>
+</div>
+
 
 <!-- Footer -->
 <footer class="w3-container w3-padding-64 w3-center w3-opacity">  
@@ -113,31 +143,32 @@ function enableTryItButton() {
 }
 
 
-
-
 document.getElementById('upload-form').addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent normal form submission
+        event.preventDefault();  
         
         var formData = new FormData(this);  // Collect form data
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '{% url "upload_image" %}', true);  // Set the correct URL for your view
+        xhr.open('POST', '{% url "upload_data" %}', true);  // Set the correct URL for your view
+        var selected_LLM = document.getElementById('llm-select').value;
+        var selected_prompt = document.getElementById('prompt-select').value;
 
-        // Handle the AJAX response
+        formData.append('llm-select', selected_LLM);
+        formData.append('prompt-select', selected_prompt);
+       
         xhr.onload = function() {
             if (xhr.status == 200) {
-                // Parse the JSON response
+            
                 var response = JSON.parse(xhr.responseText);
                 var imagePath = response.image_url;
-
-                // Show an alert with the image path
                 alert('Image uploaded successfully!\nImage Path: ' + imagePath);
+                alert('The LLM you selected is ' + selected_LLM);
+                alert('The prompt you selected is ' + selected_prompt);
             } else {
-                // Show an error message (if something goes wrong)
+                
                 alert('Image upload failed.');
             }
         };
 
-        // Send the form data via AJAX
         xhr.send(formData);
     });
 </script>

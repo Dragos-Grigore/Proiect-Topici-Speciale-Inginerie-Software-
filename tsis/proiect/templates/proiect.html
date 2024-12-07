@@ -42,22 +42,24 @@
           <label for="file-upload" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">
               Browse Image
           </label>
+          <input id="file-upload" type="file" name="image" accept="image/*" style="display: none;">
 
-          <div class="w3-margin-top" style="display: block;">
+          <div class="w3-margin-top" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <label for="llm-select">Choose an LLM:</label>
             <!-- Dropdown Menu (Placed next to the button) -->
-            <select id="llm-select" class="w3-button w3-black w3-padding-large w3-large" style="margin-left: 5px;">
-                <option value="ChatGPT 69" selected>ChatGPT 69</option>
-                <option value="LLM 2">LLM 2</option>
+            <select id="llm-select" name="selected_llm" class="w3-button w3-black w3-padding-large w3-large">
+              <option value="Flan T5 Base" selected>Flan T5 Base</option>
+                <option value="Flan T5 Small">Flan T5 Small</option>
+                <option value="GPT-2">GPT-2</option>
+                <option value="BART Base">BART Base</option>
             </select>
           </div>
 
-          <div class="w3-margin-top" style="display: flex; align-items: center; justify-content: center;">
-              <label for="ask-llm" style="margin-right: 10px;">Ask the model: </label>
-              <textarea class="w3-black" rows="2" id="comment"></textarea>
+          <div class="w3-margin-top" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <label for="ask-llm">Ask the model:</label>
+              <textarea id="llm-ask" name="llm_query" class="w3-black" rows="2" id="comment"></textarea>
           </div>
 
-          <input id="file-upload" type="file" name="image" accept="image/*" style="display: none;" onchange="enableTryItButton()">
           <button id="try-it-button" type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top" disabled>Try it</button>    
       </form>
       
@@ -127,35 +129,79 @@
   </footer>
 
     <script>
-      function enableTryItButton() {
-        document.getElementById('try-it-button').disabled = false;
+      var imageUploaded = false;
+      var llmQueryAdded = false;
+
+      document.addEventListener("DOMContentLoaded", () => {
+          const form = document.getElementById('upload-form');
+          
+          // Attach onchange listener to form elements
+          form.querySelectorAll('input, textarea').forEach(field => {
+              field.addEventListener('change', () => {
+                  var fieldName = field.name;
+
+                  if (fieldName === "image") {
+                      imageUploaded = true;
+                  } else if (fieldName === "llm_query") {
+                      if (field.value !== "") {
+                        llmQueryAdded = true;
+                      } else {
+                        llmQueryAdded = false;
+                      }
+                  }
+
+                  if (imageUploaded && llmQueryAdded) {
+                      document.getElementById('try-it-button').disabled = false;
+                  } else {
+                      document.getElementById('try-it-button').disabled = true;
+                  }
+              });
+          });
+      });
+
+      // var formActions = 0;
+
+      // function enableTryItButton() {
+      //   document.getElementById('try-it-button').disabled = false;
+      // }
+
+      function checkIfEmpty(textarea) {
+          const message = document.getElementById('llm-ask');
+          if (textarea.value.trim() === '') {
+              message.textContent = 'Textarea is empty!';
+          } else {
+              message.textContent = 'Textarea has content!';
+          }
       }
 
       document.getElementById('upload-form').addEventListener('submit', function(event) {
-              event.preventDefault();  // Prevent normal form submission
-              
-              var formData = new FormData(this);  // Collect form data
-              var xhr = new XMLHttpRequest();
-              xhr.open('POST', '{% url "upload_image" %}', true);  // Set the correct URL for your view
+          event.preventDefault();  // Prevent normal form submission
+          
+          var formData = new FormData(this);  // Collect form data
 
-              // Handle the AJAX response
-              xhr.onload = function() {
-                  if (xhr.status == 200) {
-                      // Parse the JSON response
-                      var response = JSON.parse(xhr.responseText);
-                      var message = response.message;
+          // alert(formData.get("llm-select"));
 
-                      // Show an alert with the image path
-                      alert('Image uploaded successfully!\nMessage: ' + message);
-                  } else {
-                      // Show an error message (if something goes wrong)
-                      alert('Image upload failed.');
-                  }
-              };
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '{% url "upload_image" %}', true);  // Set the correct URL for your view
 
-              // Send the form data via AJAX
-              xhr.send(formData);
-          });
+          // Handle the AJAX response
+          xhr.onload = function() {
+              if (xhr.status == 200) {
+                  // Parse the JSON response
+                  var response = JSON.parse(xhr.responseText);
+                  var answer = response.answer;
+
+                  // Show an alert with llm answer
+                  alert('Image uploaded successfully!\nAnswer: ' + answer);
+              } else {
+                  // Show an error message (if something goes wrong)
+                  alert('Image upload failed.');
+              }
+          };
+
+          // Send the form data via AJAX
+          xhr.send(formData);
+      });
     </script>
   </body>
 </html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>MultiModalApp</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+  body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+  .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
+  .fa-anchor,.fa-coffee {font-size:200px}
+  </style>
+  </head>
+  <body>
+
+  <!-- Navbar -->
+  <div class="w3-top">
+    <div class="w3-bar w3-red w3-card w3-left-align w3-large">
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+      <a href="/" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+      <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Playground</a>
+    </div>
+
+    <!-- Navbar on small screens -->
+    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+      
+    </div>
+  </div>
+
+
+
+
+  <header class="w3-container w3-red w3-center" style="padding:128px 16px">
+      <h1 class="w3-margin w3-jumbo">Welcome to the Playground <i class="fa fa-gamepad" aria-hidden="true"></i></h1>
+
+      <!-- File Upload Form -->
+      <form id="upload-form" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="file-upload" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">
+              Browse Image
+          </label>
+          <input id="file-upload" type="file" name="image" accept="image/*" style="display: none;">
+
+          <div class="w3-margin-top" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <label for="llm-select">Choose an LLM:</label>
+            <!-- Dropdown Menu (Placed next to the button) -->
+            <select id="llm-select" name="selected_llm" class="w3-button w3-black w3-padding-large w3-large">
+              <option value="Flan T5 Base" selected>Flan T5 Base</option>
+                <option value="Flan T5 Small">Flan T5 Small</option>
+                <option value="GPT-2">GPT-2</option>
+                <option value="BART Base">BART Base</option>
+            </select>
+          </div>
+
+          <div class="w3-margin-top" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <label for="ask-llm">Ask the model:</label>
+              <textarea id="llm-ask" name="llm_query" class="w3-black" rows="2" id="comment"></textarea>
+          </div>
+
+          <button id="try-it-button" type="submit" class="w3-button w3-black w3-padding-large w3-large w3-margin-top" disabled>Try it</button>    
+      </form>
+      
+      <!-- Message Box for Success -->
+      <div id="message-box" class="w3-container w3-green w3-padding-16" style="display: none;">
+          <p>Image uploaded successfully!</p>
+      </div>
+  </header>
+
+
+  <!-- First Grid -->
+  <div class="w3-row-padding w3-padding-64 w3-container">
+    <div class="w3-content">
+      <div class="w3-twothird">
+        <h1>The Playground</h1>
+        <h5 class="w3-padding-32">The Playground allows you to try different configurations of the model</h5>
+
+        <p class="w3-text-grey">You can upload a picture and then obtain a description of it.</p>
+      </div>
+
+      <div class="w3-third w3-center">
+          <i class="fa fa-camera w3-padding-64 w3-text-red" style="font-size: 150px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Grid -->
+  <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+    <div class="w3-content">
+      <div class="w3-third w3-center">
+          <i class="fa fa-globe w3-padding-64 w3-text-red" style="font-size: 150px;"></i>
+      </div>
+
+      <div class="w3-twothird">
+        <h1>LLMs</h1>
+        <h5 class="w3-padding-32">You can select a Large Language Model from the provided combo-box.</h5>
+
+        <p class="w3-text-grey">The LLM that you choose is important because of the visual descriptions that can be obtained from a certain picture. Some can provide accurate descriptions and some not so much. Play around and see which LLM provides the most accurate results </p>
+      </div>
+    </div>
+  </div>
+
+<!-- Third Grid -->
+<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-third w3-center">
+        <i class="fa fa-book w3-padding-64 w3-text-red" style="font-size: 150px;"></i>
+    </div>
+
+    <div class="w3-twothird">
+      <h1>Some information about each model so that you are familiar with all of them</h1>
+      <h5 class="w3-padding-32">Here you will find out about each available model</h5>
+
+      <p class="w3-text-grey">The Google flan models were first introduced in the paper: "Scaling Instruction-Finetuned Language Models" and they were instruction fine-tuned and chain-of-thought-fine-tuned according to the authors. They represent a good choice when working with question answering tasks. </p>
+      <p class="w3-text-grey">The difference between the base and the small model is the number of parameters: 250M and 80M</p>
+      <p class="w3-text-grey">The BERT models are probably the most well-known language models that exist. It was first introduced in the paper: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" and stands out with its bidirectional encoding. Although 6-years-old, it can still be used for various tasks including question-answering</p>
+      <p class="w3-text-grey">The difference between cased and uncased is that the cased model is case-sensitive while the uncased model is not</p>
+    </div>
+  </div>
+</div>
+
+  <!-- Footer -->
+  <footer class="w3-container w3-padding-64 w3-center w3-opacity">  
+    
+  </div>
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+  </footer>
+
+    <script>
+      var imageUploaded = false;
+      var llmQueryAdded = false;
+
+      document.addEventListener("DOMContentLoaded", () => {
+          const form = document.getElementById('upload-form');
+          
+          // Attach onchange listener to form elements
+          form.querySelectorAll('input, textarea').forEach(field => {
+              field.addEventListener('change', () => {
+                  var fieldName = field.name;
+
+                  if (fieldName === "image") {
+                      imageUploaded = true;
+                  } else if (fieldName === "llm_query") {
+                      if (field.value !== "") {
+                        llmQueryAdded = true;
+                      } else {
+                        llmQueryAdded = false;
+                      }
+                  }
+
+                  if (imageUploaded && llmQueryAdded) {
+                      document.getElementById('try-it-button').disabled = false;
+                  } else {
+                      document.getElementById('try-it-button').disabled = true;
+                  }
+              });
+          });
+      });
+
+      // var formActions = 0;
+
+      // function enableTryItButton() {
+      //   document.getElementById('try-it-button').disabled = false;
+      // }
+
+      function checkIfEmpty(textarea) {
+          const message = document.getElementById('llm-ask');
+          if (textarea.value.trim() === '') {
+              message.textContent = 'Textarea is empty!';
+          } else {
+              message.textContent = 'Textarea has content!';
+          }
+      }
+
+      document.getElementById('upload-form').addEventListener('submit', function(event) {
+          event.preventDefault();  // Prevent normal form submission
+          
+          var formData = new FormData(this);  // Collect form data
+
+          // alert(formData.get("llm-select"));
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '{% url "upload_image" %}', true);  // Set the correct URL for your view
+
+          // Handle the AJAX response
+          xhr.onload = function() {
+              if (xhr.status == 200) {
+                  // Parse the JSON response
+                  var response = JSON.parse(xhr.responseText);
+                  var answer = response.answer;
+
+                  // Show an alert with llm answer
+                  alert('Image uploaded successfully!\nAnswer: ' + answer);
+              } else {
+                  // Show an error message (if something goes wrong)
+                  alert('Image upload failed.');
+              }
+          };
+
+          // Send the form data via AJAX
+          xhr.send(formData);
+      });
+    </script>
+  </body>
+</html>

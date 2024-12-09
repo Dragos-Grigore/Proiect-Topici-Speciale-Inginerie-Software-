@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <title>MultiModalApp</title>
+  <title>UI for LENS</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -75,7 +75,7 @@
     <div class="w3-content">
       <div class="w3-twothird">
         <h1>The Playground</h1>
-        <h5 class="w3-padding-32">The Playground allows you to try different configurations of the model</h5>
+        <h5 class="w3-padding-32">The Playground allows you to try different configurations of the system.</h5>
 
         <p class="w3-text-grey">You can upload a picture and then obtain a description of it.</p>
       </div>
@@ -97,7 +97,7 @@
         <h1>LLMs</h1>
         <h5 class="w3-padding-32">You can select a Large Language Model from the provided combo-box.</h5>
 
-        <p class="w3-text-grey">The LLM that you choose is important because of the visual descriptions that can be obtained from a certain picture. Some can provide accurate descriptions and some not so much. Play around and see which LLM provides the most accurate results </p>
+        <p class="w3-text-grey">The LLM that you choose is important because of the visual descriptions that can be obtained from a certain picture. Some can provide accurate descriptions and some not so much. Play around and see which LLM provides the desired results.</p>
       </div>
     </div>
   </div>
@@ -111,12 +111,13 @@
 
     <div class="w3-twothird">
       <h1>Some information about each model so that you are familiar with all of them</h1>
-      <h5 class="w3-padding-32">Here you will find out about each available model</h5>
+      <h5 class="w3-padding-32">Here you will find out about each available model:</h5>
 
-      <p class="w3-text-grey">The Google flan models were first introduced in the paper: "Scaling Instruction-Finetuned Language Models" and they were instruction fine-tuned and chain-of-thought-fine-tuned according to the authors. They represent a good choice when working with question answering tasks. </p>
-      <p class="w3-text-grey">The difference between the base and the small model is the number of parameters: 250M and 80M</p>
-      <p class="w3-text-grey">The BERT models are probably the most well-known language models that exist. It was first introduced in the paper: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" and stands out with its bidirectional encoding. Although 6-years-old, it can still be used for various tasks including question-answering</p>
-      <p class="w3-text-grey">The difference between cased and uncased is that the cased model is case-sensitive while the uncased model is not</p>
+      <p class="w3-text-grey">All of the models were taken from the Hugging Face website.</p>
+      <p class="w3-text-grey">The Google flan models were first introduced in the paper: "Scaling Instruction-Finetuned Language Models" and they were instruction fine-tuned and chain-of-thought-fine-tuned according to the authors. They represent a good choice when working with question answering tasks. The difference between the base and the small model lies in the number of parameters: 248M and 77M.</p>
+      <p class="w3-text-grey">GPT-2 (Generative Pre-trained Transformer 2) is a powerful language model developed by OpenAI, designed for natural language generation tasks. It uses the Transformer architecture and is based on an autoregressive approach, predicting the next token in a sequence given the preceding context. The version used by our website has 137M parameters.</p>
+      <!-- <p class="w3-text-grey">The BERT models are probably the most well-known language models that exist. It was first introduced in the paper: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" and stands out with its bidirectional encoding. Although 6-years-old, it can still be used for various tasks including question-answering</p> -->
+      <p class="w3-text-grey">The BART (Bidirectional and Auto-Regressive Transformer) model is a sequence-to-sequence language model developed by Facebook AI. It combines the strengths of bidirectional (like BERT) and autoregressive (like GPT) architectures, making it highly effective for generative tasks (esp. summarization and translation). The version featured here has 139M parameters.</p>
     </div>
   </div>
 </div>

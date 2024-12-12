@@ -5,7 +5,7 @@ from lens import Lens, LensProcessor
 from PIL import Image
 import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
-
+import re
 def multimodal_page(request):
     return render(request, 'proiect.html')
 
@@ -16,6 +16,12 @@ def upload_image(request):
         llm_query = request.POST.get('llm_query')
 
         answer = analyze_image(image, selected_llm, llm_query)
+        cleaned_text = re.sub(r"<.*?>", "", answer).strip()
+    # Capitalize the first letter and ensure proper punctuation
+        result = cleaned_text[0].upper() + cleaned_text[1:]
+        if not result.endswith('.'):
+            result += '.'
+        answer=result
         return JsonResponse({
             'answer': answer
         })
